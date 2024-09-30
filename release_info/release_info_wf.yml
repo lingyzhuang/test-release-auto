@@ -1,0 +1,113 @@
+---
+products:
+  - name: rhel
+    phases:
+      # The name is align with PP page.
+      # See https://pp.engineering.redhat.com/rhel/overview/
+      - name: "Concept"
+        # If the pipeline will skip checking the releases in such phase
+        skip: false
+        milestones:
+          # action is the function you matched the milestone and execute logic
+          - action: create_release_phase1
+            milestone: "New Release Configuration"
+            flag: "sp"
+            jira_label_prefix: "tc-auto-create-release-phase1"
+            pct_mr_create_label: "tc-auto-create-release-phase1-mr"
+            watchers:
+              - chcao
+              - rhn-support-vhiremat
+              - rh-ee-luzhang
+            issue_description: "New release configuration phase1 - SPTEMPL-420 tasks will automatically solve by automation"
+            dependency_labels:
+              - dst-ready
+          - action: create_release_phase2
+            milestone: "Enable OSCI gating"
+            flag: "osci"
+          - action: post_rc
+            milestone: "Nightly compose promoted as RC compose"
+            flag: "sp"
+          - action: post_ga
+            milestone: "TBD"
+            flag: "sp"
+          - action: create_extentions
+            milestone: "TBD"
+            flag: "sp"
+          - action: create_async
+            milestone: "TBD"
+            flag: "sp"
+          - action: eol
+            milestone: "TBD"
+            flag: "sp"
+      - name: "Planning / Development / Testing"
+        skip: true
+        milestones:
+          - action: create_release_phase1
+            milestone: "New Release Configuration"
+            flag: "sp"
+          - action: create_release_phase2
+            milestone: "Enable OSCI gating"
+            flag: "osci"
+          - action: post_rc
+            milestone: "Nightly compose promoted as RC compose"
+            flag: "sp"
+          - action: post_ga
+            milestone: "TBD"
+            flag: "sp"
+          - action: create_extentions
+            milestone: "TBD"
+            flag: "sp"
+          - action: create_async
+            milestone: "TBD"
+            flag: "sp"
+          - action: eol
+            milestone: "TBD"
+            flag: "sp"
+      - name: "Stabilization"
+        skip: true
+        milestones:
+          - action: create_release_phase1
+            milestone: "New Release Configuration"
+            flag: "sp"
+          - action: create_release_phase2
+            milestone: "Enable OSCI gating"
+            flag: "osci"
+          - action: post_rc
+            milestone: "Nightly compose promoted as RC compose"
+            flag: "sp"
+          - action: post_ga
+            milestone: "TBD"
+            flag: "sp"
+          - action: create_extentions
+            milestone: "TBD"
+            flag: "sp"
+          - action: create_async
+            milestone: "TBD"
+            flag: "sp"
+          - action: eol
+            milestone: "TBD"
+            flag: "sp"
+      - name: "Maintenance"
+        skip: true
+        milestones:
+          - action: create_release_phase1
+            milestone: "New Release Configuration"
+            flag: "sp"
+          - action: create_release_phase2
+            milestone: "Enable OSCI gating"
+            flag: "osci"
+          - action: post_rc
+            milestone: "Nightly compose promoted as RC compose"
+            flag: "sp"
+          - action: post_ga
+            milestone: "TBD"
+            flag: "sp"
+          - action: create_extentions
+            milestone: "TBD"
+            flag: "sp"
+          - action: create_async
+            milestone: "TBD"
+            flag: "sp"
+          - action: eol
+            milestone: "TBD"
+            flag: "sp"

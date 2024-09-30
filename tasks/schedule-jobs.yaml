@@ -1,0 +1,76 @@
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: schedule-jobs
+  labels:
+    app.kubernetes.io/version: "0.8.1"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.12.1"
+    tekton.dev/tags: release
+spec:
+  description: >-
+    Tekton task to schedule a job of release automation.
+  params:
+    - name: JIRA_TOKEN
+      description: Name of secret for Jira token.
+      default: jira-token
+    - name: GITLAB_TOKEN
+      description: Name of secret for gitlab token.
+      default: gitlab-token
+    - name: RHELCMP_JENKINS_TOKEN
+      description: Name of secret for Jenkin token.
+      default: rhelcmp-jenkins-token
+    - name: RHELCMP_PRE_JOB_TOKEN
+      description: Name of token for Jenkin pre job token.
+      default: rhelcmp-pre-job-token
+  volumes:
+    - name: jira-token
+      secret:
+        secretName: $(params.JIRA_TOKEN)
+        optional: true
+    - name: gitlab-token
+      secret:
+        secretName: $(params.GITLAB_TOKEN)
+        optional: true
+    - name: rhelcmp-jenkins-token
+      secret:
+        secretName: $(params.RHELCMP_JENKINS_TOKEN)
+        optional: true
+    - name: rhelcmp-pre-job-token
+      secret:
+        secretName: $(params.RHELCMP_PRE_JOB_TOKEN)
+        optional: true
+  steps:
+    - name: schedule-jobs
+      image: registry.fedoraproject.org/fedora:latest
+      script: |
+        #!/usr/bin/env bash
+        set -eux
+        cat /etc/redhat-release
+        curl -sS https://certs.corp.redhat.com/certs/Current-IT-Root-CAs.pem >/etc/pki/ca-trust/source/anchors/Current-IT-Root-CAs.pem
+        update-ca-trust
+        export REQUESTS_CA_BUNDLE=/etc/pki/tls/certs/ca-bundle.crt
+        dnf install -y python3-pip python3-devel openldap-devel gcc krb5-server krb5-devel
+        pip3 install $"(cat requirements.txt)"
+        python3 release_monitor_engine.py --jira-token "$JIRA_TOKEN" --gitlab-token "$GITLAB_TOKEN"  --team cmp
+      volumeMounts:
+        - name: jira-token
+          mountPath: "/etc/secrets"
+          readOnly: true
+        - name: gitlab-token
+          mountPath: "/etc/secrets"
+        - name: rhelcmp-jenkins-token
+          mountPath: "/etc/secrets"
+        - name: rhelcmp-pre-job-token
+          mountPath: "/etc/secrets"
+      env:
+        - name: JIRA_TOKEN
+          value: $(params.JIRA_TOKEN)
+        - name: GITLAB_TOKEN
+          value: $(params.GITLAB_TOKEN)
+        - name: RHELCMP_JENKINS_TOKEN
+          value: $(params.RHELCMP_JENKINS_TOKEN)
+        - name: RHELCMP_PRE_JOB_TOKEN
+          value: $(params.RHELCMP_PRE_JOB_TOKEN)
+      workingDir: $(workspaces.source.path)

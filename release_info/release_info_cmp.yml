@@ -1,0 +1,35 @@
+---
+products:
+  - name: rhel
+    phases:
+      # The name is align with PP page.
+      # See https://pp.engineering.redhat.com/rhel/overview/
+      - name: "Maintenance"
+        skip: false
+        milestones:
+          - action: rhelcmp_build_compose
+            milestone: "SP compose"
+            flag: "sp"
+            compose_build_products:
+              - "rhel-7-9.z"
+              - "rhel-8.2.0.z"
+              - "rhel-8.4.0.z"
+            jira_project: "RHELCMP"
+            jenkins_url: "releng-jenkins-csb-rhelcmp.apps.ocp-c1.prod.psi.redhat.com"
+            pre_compose_job: "Pre-compose-Email"
+            rhel8_compose_job: "Compose-RHEL8-EUS-AUS"
+            rhel7_compose_job: "Compose%20RHEL%207%20production"
+            issue_description: "This task is a tracker of the compose build.\nThe steps would be performed automatically in Jenkins build. You can refer to sample tasks for the detailed steps:\nFor rhel-7.9: [SPTEMPL-548|https://issues.redhat.com/browse/SPTEMPL-548], [SPTEMPL-557|https://issues.redhat.com/browse/SPTEMPL-557], [SPTEMPL-540|https://issues.redhat.com/browse/SPTEMPL-540]\nFor rhel-8.2 and rhel-8.4: [SPTEMPL-96|https://issues.redhat.com/browse/SPTEMPL-96]\nNote:\nFor rhel-7.9, composes are needed for both rhel and extras-rhel."
+
+  - name: directory
+    phases:
+      # The name is align with PP page.
+      # See https://pp.engineering.redhat.com/directory/overview/
+      - name: "Concept"
+        skip: false
+        milestones:
+          - action: rhelcmp_rhds_compose
+            milestone: "Production compose"
+            flag: "sp"
+            jira_project: "RHELCMP"
+            issue_description: "ISOs must be prepared for RHDS GA Release\nAfter finishing the compose, please run\n{code:java}\nmkdir ${COMPOSE}/staging\nchgrp rhel-compose-stagers ${COMPOSE}/staging\nchmod g+w ${COMPOSE}/staging\n{code}"
